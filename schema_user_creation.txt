@@ -1,0 +1,10 @@
+-- Create the user
+CREATE USER DE_LAB IDENTIFIED BY "rguktn";
+
+-- Core permissions
+GRANT CONNECT, RESOURCE TO DE_LAB;
+ALTER USER DE_LAB QUOTA UNLIMITED ON USERS;
+
+-- Advanced PL/SQL permissions (essential for DE roles)
+GRANT CREATE TABLE, CREATE VIEW, CREATE PROCEDURE, CREATE SEQUENCE, CREATE TRIGGER TO DE_LAB;
+GRANT CREATE TYPE TO DE_LAB; -- For practicing Collections and Bulk processing
