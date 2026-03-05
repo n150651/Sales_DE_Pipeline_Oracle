@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 oracle_de_venv/
 .env
 db_test.py
 
+=======
+>>>>>>> 5f32d76cc042a66d1d362b9f2b6e3813bf863af9
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -208,4 +211,8 @@ cython_debug/
 # Marimo
 marimo/_static/
 marimo/_lsp/
+<<<<<<< HEAD
 __marimo__/
+=======
+__marimo__/
+>>>>>>> 5f32d76cc042a66d1d362b9f2b6e3813bf863af9
