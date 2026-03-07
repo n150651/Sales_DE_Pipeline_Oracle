@@ -1,55 +1,60 @@
-# Sales_DE_Pipeline_Oracle
-Data Engineering project with ELT pipeline with medallion architecture following SCDTYPE 2 
-# 🚀 Sales Data Pipeline: Medallion Architecture (Oracle + Python)
+# 🚀 Enterprise Sales Data Pipeline: Medallion Architecture
+### **Oracle Database | Python | SCD Type 2 | Data Observability**
 
-A professional-grade Data Engineering pipeline that moves sales data from raw CSV files into an Oracle Database using the **Medallion Architecture** (Bronze, Silver, Gold layers) and **Slowly Changing Dimensions (SCD Type 2)** for historical tracking.
+A **production-grade ETL pipeline** designed for high-availability environments. This project automates the movement of sales data from raw CSV sources into an Oracle Database, implementing **Medallion Architecture** and **Slowly Changing Dimensions (SCD Type 2)**. 
 
-## 🏗️ Architecture Overview
-This project follows the industry-standard Medallion Architecture to ensure data quality and reliability:
-
-1.  **Bronze (Raw):** Direct ingestion from CSV using high-performance `executemany` batch loading.
-2.  **Silver (Clean):** Implements **SCD Type 2** logic to track historical changes and applies business rules (e.g., normalizing `Hyderabad` to `SOUTH`).
-3.  **Gold (Analytical):** Provides aggregated views for business reporting and performance metrics.
+Built with a **production-first mindset**, it features integrated **data quality gates**, **automated quarantine logic**, and **execution auditing** to support 24/7 operations.
 
 
 
-## 🛠️ Tech Stack
+---
+
+## 🏗️ **System Architecture & Data Flow**
+
+This project follows the industry-standard Medallion Architecture to ensure data integrity at every stage:
+
+1. **Bronze (Raw Ingestion):** - High-performance batch loading from CSV using `executemany`.
+   - Temporary storage for raw, unvalidated data to ensure high-speed landing.
+
+2. **Quarantine (The "Hospital" Pattern):** - An automated **Circuit Breaker** that identifies malformed data (non-numeric amounts, null identifiers).
+   - Records are moved to `SILVER_SALES_QUARANTINE` with error reasons, preventing pipeline crashes and ensuring the Silver layer remains "clean."
+
+3. **Silver (Refined & Historical):** - **SCD Type 2 Implementation:** Maintains a full history of changes using `start_date`, `end_date`, and `is_current` flags.
+   - **Business Logic:** Normalizes regional data (e.g., standardizing "Hyderabad" to "SOUTH") and deduplicates records using SQL Window Functions (`ROW_NUMBER()`).
+
+4. **Audit & Observability:** - Every execution is logged in `PIPELINE_LOGS`, tracking status (**STARTED/SUCCESS/FAILED**), duration, and traceback messages for immediate troubleshooting.
+
+
+
+---
+
+## 📈 **Engineering Highlights**
+
+* **Idempotent Design:** The pipeline can be re-run safely; logic ensures that only new or changed data is processed.
+* **Performance Optimized:** Uses Oracle **Inline Views** and **Set-based SQL** operations rather than row-by-row processing.
+* **Production Readiness:** Designed for **6 AM support shifts** with clear validation queries and automated error logging.
+
+
+
+---
+
+## 🛠️ **Tech Stack**
+
 * **Language:** Python 3.12
 * **Database:** Oracle Database (XE)
-* **Driver:** `python-oracledb` (Thin Mode)
-* **Environment:** Python-dotenv for secure credential management
-* **Version Control:** Git & GitHub
+* **Library:** `python-oracledb` (Thin Mode)
+* **Security:** `python-dotenv` for environment variable management.
 
-## 📈 Key Features & Business Rules
-* **SCD Type 2:** Tracks price or region changes over time using `start_date`, `end_date`, and `is_current` flags.
-* **Idempotency:** The pipeline can be re-run multiple times without creating duplicate records or corrupting data.
-* **Data Normalization:** Automatically standardizes regional names (e.g., "Hyderabad" -> "SOUTH").
-* **Deduplication:** Uses SQL Window Functions (`ROW_NUMBER()`) to handle duplicate records within source files.
+---
 
+## 🚀 **Getting Started**
 
+### **1. Prerequisites**
+- Oracle Database (local or cloud)
+- Python 3.x installed
 
-## 🚀 How to Run
-1.  **Clone the Repo:**
-    ```bash
-    git clone [https://github.com/n150651/Sales_DE_Pipeline_Oracle.git](https://github.com/n150651/Sales_DE_Pipeline_Oracle.git)
-    cd Sales_DE_Pipeline_Oracle
-    ```
-2.  **Set up Environment Variables:**
-    Create a `.env` file with your Oracle credentials:
-    ```text
-    DB_USER=your_user
-    DB_PASSWORD=your_password
-    DB_DSN=localhost:1521/xe
-    ```
-3.  **Initialize Database:**
-    Run the `database_setup.sql` script in your Oracle SQL Developer.
-4.  **Execute Pipeline:**
-    ```bash
-    python main.py
-    ```
-
-## ✅ Validation
-The project includes a `test_pipeline.py` script to verify:
-* Historical record preservation (SCD Type 2).
-* Zero "Hyderabad" leakage in the Silver layer.
-* Correct current flag assignment.
+### **2. Setup**
+Clone the repository and install dependencies:
+```bash
+git clone [https://github.com/n150651/Sales_DE_Pipeline_Oracle.git](https://github.com/n150651/Sales_DE_Pipeline_Oracle.git)
+cd Sales_DE_Pipeline_Oracle
